@@ -269,8 +269,8 @@ GPUStatus gpuUploadImageToTexture(uint32_t width, uint32_t height, GPUColorForma
         return GPUStatusInvalidTexture;
     }
     
-    texture->width = 0;
-    texture->height = 0;
+    texture->width = width;
+    texture->height = height;
     
     GLenum pixelFormat = gpuColorFormatToGLFormat(colorFormat);
     
