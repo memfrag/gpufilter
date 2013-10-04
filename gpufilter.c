@@ -84,7 +84,7 @@ const char *kGPUDefaultFragmentShaderCode = SHADER_STRING
  
  void main() {
      gl_FragColor = texture2D(texture, uv);
-     gl_FragColor = gl_FragColor.brga;
+     gl_FragColor = gl_FragColor.rgba;
  }
  );
 #else
