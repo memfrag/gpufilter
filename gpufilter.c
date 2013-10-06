@@ -102,6 +102,7 @@ static GLenum gpuColorFormatToGLFormat(GPUColorFormat colorFormat);
 GPUStatus gpuConfigureRenderingPipeline(void)
 {
     glDisable(GL_CULL_FACE);
+    glDisable(GL_DEPTH_TEST);
     
     GLuint positionAttribute = 0;
     glVertexAttribPointer(positionAttribute, 2, GL_FLOAT, 0, 0, vertices);
@@ -128,13 +129,13 @@ GPUStatus gpuRenderTextureToFramebufferUsingProgram(GPUTexture *texture,
         return GPUStatusInvalidProgram;
     }
     
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer->framebufferId);
     glViewport(0, 0, framebuffer->texture.width, framebuffer->texture.height);
     
     glUseProgram(program->programId);
-    
     glUniform1i(program->textureUniformLocation, 0);
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, framebuffer->texture.textureId);
+    glBindTexture(GL_TEXTURE_2D, texture->textureId);
     
     for (int i = 0; i < 7; i++) {
         if (program->additionalTextures[i].textureShouldBeUsed) {
@@ -145,10 +146,8 @@ GPUStatus gpuRenderTextureToFramebufferUsingProgram(GPUTexture *texture,
     }
     
     glActiveTexture(GL_TEXTURE0);
-    
-    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer->framebufferId);
-    glBindTexture(GL_TEXTURE_2D, texture->textureId);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
     return GPUStatusOK;
 }
 
@@ -274,6 +273,8 @@ GPUStatus gpuUploadImageToTexture(uint32_t width, uint32_t height, GPUColorForma
     
     GLenum pixelFormat = gpuColorFormatToGLFormat(colorFormat);
     
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture->textureId);
     glTexImage2D(GL_TEXTURE_2D, 0, pixelFormat, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixelData);
     if (glGetError() != GL_NO_ERROR) {
         return GPUStatusUnknownError;
