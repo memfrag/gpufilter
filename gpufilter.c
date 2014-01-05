@@ -37,7 +37,7 @@ static const GLfloat UVs[] = {
     1.0f, 1.0f,
 };
 
-#ifdef TARGET_OS_MAC
+#if !TARGET_OS_IPHONE
 const char *kGPUDefaultVertexShaderCode = SHADER_STRING
 (
  attribute vec4 inputPosition;
@@ -62,7 +62,7 @@ const char *kGPUDefaultFragmentShaderCode = SHADER_STRING
      gl_FragColor = gl_FragColor.rgba;
  }
  );
-#elif defined(TARGET_OS_IPHONE)
+#elif TARGET_OS_IPHONE
 const char *kGPUDefaultVertexShaderCode = SHADER_STRING
 (
  attribute vec4 inputPosition;
